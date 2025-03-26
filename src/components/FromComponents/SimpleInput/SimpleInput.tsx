@@ -29,7 +29,7 @@ const SimpleInput: React.FC<SimpleInputType> = ({
   placeHolder,
   readOnly = false,
   autoFocus = false,
-  onInputChange = () => {},
+  onInputChange,
 }: SimpleInputType): JSX.Element => {
   const classes = useFromComponentsStyle();
   const {
@@ -105,11 +105,12 @@ const SimpleInput: React.FC<SimpleInputType> = ({
       placeholder={placeHolder}
       type={type}
       label={label}
-      inputRef={ref}
-      {...inputProp}
       error={!!error?.message}
       helperText={error?.message}
       autoFocus={autoFocus}
+      inputRef={ref}
+      {...inputProp}
+      onChange={onInputChange}
     ></TextField>
   );
 };

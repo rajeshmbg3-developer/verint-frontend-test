@@ -20,4 +20,6 @@ export const loginformValidation = yup.object().shape({
   password: passwordValidation,
 });
 
-export const filterInputvalidation = yup.string().max(64, "Maximum 64 characters exceeded");
+export const filterInputValidation = yup.object().shape({
+  filterInput: yup.string().max(64, "Maximum 64 characters exceeded"),
+});

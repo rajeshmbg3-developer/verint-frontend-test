@@ -1,19 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, Box } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/store";
+import { useDispatch } from "react-redux";
 import { setFilter } from "src/store/queueSlice";
-
-export type FilterInputType = {
-  input: string;
-};
+import { useDebounce } from "src/hooks/useDebounce";
+import { DEBOUNCE_TIME } from "src/constants/app.constant";
 
 const CustomerFilter: React.FC = () => {
   const dispatch = useDispatch();
-  const filter = useSelector((state: RootState) => state.queue.filter);
+  // const filter = useSelector((state: RootState) => state.queue.filter);
+  const [inputValue, setInputValue] = useState("");
+  const debounceFilter = useDebounce(inputValue, DEBOUNCE_TIME);
+
+  useEffect(() => {
+    dispatch(setFilter(debounceFilter));
+  }, [debounceFilter, dispatch]);
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setFilter(event.target.value));
+    setInputValue(event.target.value);
   };
 
   return (
@@ -22,7 +25,7 @@ const CustomerFilter: React.FC = () => {
         fullWidth
         variant="outlined"
         label="Filter Customers"
-        value={filter}
+        value={inputValue}
         onChange={handleFilterChange}
         placeholder="Search by name or ticket number"
       />

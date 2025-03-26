@@ -6,6 +6,7 @@ import CustomerFilter from "src/components/CustomerFilter/CustomerFilter";
 import CustomerCard from "src/components/CustomerCard/CustomerCard";
 import queueService from "src/services/queueService";
 import { setCustomers } from "src/store/queueSlice";
+import { REFRESH_TIME } from "src/constants/app.constant";
 
 const CustomerList: React.FC = () => {
   const dispatch = useDispatch();
@@ -22,7 +23,7 @@ const CustomerList: React.FC = () => {
       dispatch(setCustomers(fetchedCustomers));
     } catch (err) {
       setError("Failed to fetch customers");
-      console.error("Failed to fetch customers", err);
+      // console.error("Failed to fetch customers", err);
     } finally {
       setIsLoading(false);
     }
@@ -31,9 +32,7 @@ const CustomerList: React.FC = () => {
   useEffect(() => {
     loadCustomers();
     // Periodic refresh every 30 seconds
-    const intervalId = setInterval(loadCustomers, 30000);
-
-    // Cleanup interval on component unmount
+    const intervalId = setInterval(loadCustomers, REFRESH_TIME);
     return () => clearInterval(intervalId);
   }, [dispatch]);
 

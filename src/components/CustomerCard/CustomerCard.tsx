@@ -16,7 +16,7 @@ const CustomerCard: React.FC<CustomerCardProps> = ({ customer }) => {
         p: 2,
         transition: "transform 0.2s, box-shadow 0.2s",
         "&:hover": {
-          transform: "scale(1.02)",
+          transform: "scale(1.01)",
           boxShadow: 3,
         },
       }}

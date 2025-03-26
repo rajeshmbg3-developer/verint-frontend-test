@@ -12,7 +12,7 @@
     "@mui/styles": "^5.15.14",
     "@reduxjs/toolkit": "^2.6.1",
     "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
+    "@testing-library/react": "13",
     "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
@@ -25,6 +25,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.22.1",
     "react-scripts": "5.0.1",
+    "redux-mock-store": "^1.5.5",
     "sass": "^1.71.1",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0",
@@ -64,9 +65,24 @@
       "last 1 safari version"
     ]
   },
+  "\\jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.ts"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+      "^src/(.*)$": "<rootDir>/src/$1"
+    },
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
+      "^.+\\.svg$": "jest-svg-transformer"
+    }
+  },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/md5": "^2.3.5",
+    "@types/redux-mock-store": "^1.5.0",
     "eslint": "^8.57.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
