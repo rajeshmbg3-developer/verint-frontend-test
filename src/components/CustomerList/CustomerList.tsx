@@ -24,9 +24,9 @@ const CustomerList: React.FC = () => {
     } catch (err) {
       setError("Failed to fetch customers");
       // console.error("Failed to fetch customers", err);
-    } finally {
-      setIsLoading(false);
     }
+
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -45,14 +45,14 @@ const CustomerList: React.FC = () => {
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <CircularProgress />
+        <CircularProgress role="progress" />
       </Box>
     );
   }
 
   if (error) {
     return (
-      <Typography color="error" variant="h6" align="center">
+      <Typography data-testid="error-text" color="error" variant="h6" align="center">
         {error}
       </Typography>
     );

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Provider, useDispatch } from "react-redux";
 import configureStore from "redux-mock-store";
 import CustomerList from "src/components/CustomerList/CustomerList";
@@ -7,7 +7,7 @@ import { setCustomers } from "src/store/queueSlice";
 import { Customer } from "src/models/queue";
 
 jest.mock("src/services/queueService", () => ({
-  fetchCustomers: jest.fn(),
+  fetchCustomers: jest.fn(() => new Promise((resolve) => setTimeout(() => resolve([]), 1000))),
 }));
 
 jest.mock("react-redux", () => ({
@@ -85,11 +85,8 @@ describe("CustomerList Component", () => {
 
   it("filters customers based on the filter input", async () => {
     store = mockStore({ queue: { customers: mockCustomers, filter: "Bob" } });
-    render(
-      <Provider store={store}>
-        <CustomerList />
-      </Provider>,
-    );
+
+    renderWithProviders(store);
 
     // Bob should be visible because the filter is set to "Bob"
     await screen.findByText("Bob");
@@ -104,5 +101,61 @@ describe("CustomerList Component", () => {
     renderWithProviders(store);
 
     await screen.findByText("Failed to fetch customers");
+  });
+
+  it("should show  loading spinner when loading ", async () => {
+    const store = mockStore({ queue: { customers: [], filter: "" } });
+    // Simulate a pending request
+    jest.spyOn(queueService, "fetchCustomers").mockImplementation(() => new Promise(() => {}));
+
+    renderWithProviders(store);
+    // Ensure the loading indicator (CircularProgress) is present
+    expect(await screen.findByRole("progress")).toBeInTheDocument();
+  });
+
+  it("should show error text", async () => {
+    const store = mockStore({ queue: { customers: [], filter: "" } });
+    jest
+      .spyOn(queueService, "fetchCustomers")
+      .mockImplementation(() => Promise.reject(new Error("Error fetching customers")));
+    renderWithProviders(store);
+    expect(await screen.findByTestId("error-text")).toBeInTheDocument();
+  });
+
+  it("should render the customer filter", async () => {
+    const store = mockStore({ queue: { customers: [], filter: "" } });
+    renderWithProviders(store);
+    // Wait for loading spinner to disappear
+    await waitFor(() => expect(screen.queryByRole("progress")).not.toBeInTheDocument());
+
+    expect(screen.getByPlaceholderText("Search by name or ticket number")).toBeInTheDocument();
+  });
+
+  it("should show 'No customers found' when the customer list is empty", async () => {
+    const store = mockStore({ queue: { customers: [], filter: "" } });
+
+    render(
+      <Provider store={store}>
+        <CustomerList />
+      </Provider>,
+    );
+    await waitFor(() => expect(screen.queryByRole("progress")).not.toBeInTheDocument());
+
+    expect(screen.getByText("No customers found")).toBeInTheDocument();
+  });
+
+  it("should display customer cards when customers are available", async () => {
+    const store = mockStore({ queue: { customers: mockCustomers, filter: "" } });
+
+    render(
+      <Provider store={store}>
+        <CustomerList />
+      </Provider>,
+    );
+    await waitFor(() => expect(screen.queryByRole("progress")).not.toBeInTheDocument());
+
+    expect(screen.getByText("Rajesh")).toBeInTheDocument();
+    expect(screen.getByText("Alice")).toBeInTheDocument();
+    expect(screen.getByText("Bob")).toBeInTheDocument();
   });
 });
