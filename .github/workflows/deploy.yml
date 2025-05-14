@@ -31,4 +31,4 @@ jobs:
         run: aws s3 sync build/ s3://your-bucket-name --delete
 
       - name: Set S3 file permissions (optional but recommended)
-        run: aws s3 website s3://your-bucket-name --index-document index.html --error-document index.html
+        run: aws s3 website s3://deploy-github-storage --index-document index.html --error-document index.html
