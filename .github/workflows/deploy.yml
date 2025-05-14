@@ -28,7 +28,7 @@ jobs:
           aws-region: us-east-1 # adjust based on your S3 bucket region
 
       - name: Deploy to S3
-        run: aws s3 sync build/ s3://your-bucket-name --delete
+        run: aws s3 sync build/ s3://deploy-github-storage --delete
 
       - name: Set S3 file permissions (optional but recommended)
         run: aws s3 website s3://deploy-github-storage --index-document index.html --error-document index.html
